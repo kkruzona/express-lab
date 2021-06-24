@@ -37,19 +37,37 @@ let cartItems = [
 cart.get("/", (req, res) => {
     let cart = req.query["cartItems"]
     console.log("");
-    res.json(cartItems);
+    // res.json(cartItems);
+    let maxPrice = req.query.maxPrice;
+    let returnCart = cartItems;
+    if (maxPrice){
+      returnCart = cartItems.filter((item) => item.price >= item.maxPrice);
+    }
+    let prefix = req.query.prefix;
+    if (prefix){
+      // starts with ....
+      returnCart = cartItems.filter((item) => item.startsWith(prefix.toLowerCase()));
+    }
+    let pageSize = req.query.pageSize;
+    if (pageSize){
+      returnCart = cartItems.slice(0, pageSize);
+    }
+    res.json(returnCart);
+    // res.json(returnCart);
   });
-// cart.get("/:price", (req, res) => {
-//     let price = req.params.price;
-//     console.log("Getting ", price);
-//     res.json(`Getting only ${price}`);
-//   });
 cart.get("/:id", (req, res) => {
     let id = req.params.id;
     console.log("Getting ", id);
-    let found = cartItems.find((item) => {
-        return item.id == id
-    })
+    // let found = cartItems.find((item) => {
+    //     return item.id == id
+    // })
+    // THIS WORKS!
+    let found = cartItems.find((item) => item.id == id);
+    if(found){
+
+    } else {
+      return res.status(404).send('ID Not Found');
+    }
     res.json(found);
   });
   // accept POST request at URI: /students
@@ -57,20 +75,46 @@ cart.get("/:id", (req, res) => {
       console.log(req.body);
       let test = req.body.test
       console.log("Test results:", test )
-
-    res.status(201).json("Adding new item..");
+      let x = cartItems.length + 1; 
+      // let x = i + 1;
+      let newItem = {
+        id: x,
+        product: "shorts",
+        price: 25,
+        quantity: 2,
+    }
+    cartItemsArray.push(newItem);
+    console.log(cartItems);
+    res.status(201).json(cartItems);
   });
 
   // accept PUT request at URI: /students
   cart.put("/:id", (req, res) => {
-    res.json("Updating the cart..");
+    let id = req.params.id;
+    // let found = cartItems.find((item) => {
+    //     return item.id == id
+    // })
+    let updatedCart = req.body;
+    let found = cartItems.find((item) => item.id === id);
+    if (found) {
+      cartItems[req.params.id]
+    } else {
+
+    }
+    //logic find id; & handle if the object doesnt exist if time (400 code)
+    // cartItems[req.params.id] = {...cartItems[req.params.id], ...updatedCart};
+    res.json(updatedCart);
   });
 
   // accept DELETE request at URI: /students
   cart.delete("/:id", (req, res) => {
-    let id = req.params.id;
+      let id = req.params.id;
       //logic find index; use splice to remove
-    res.status(204).json("Deleting cart item..");
+      // ITS WORKING!!
+      let index = cartItems.findIndex(item => item.id == id);
+      cartItems.splice(index,1);
+      console.log(cartItems)
+    res.status(204).json(cartItems);
   });
 
   module.exports = cart;
