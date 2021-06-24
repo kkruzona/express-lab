@@ -41,12 +41,12 @@ cart.get("/", (req, res) => {
     let maxPrice = req.query.maxPrice;
     let returnCart = cartItems;
     if (maxPrice){
-      returnCart = cartItems.filter((item) => item.price >= item.maxPrice);
+      returnCart = cartItems.filter((item) => item.price <= maxPrice);
     }
     let prefix = req.query.prefix;
     if (prefix){
       // starts with ....
-      returnCart = cartItems.filter((item) => item.startsWith(prefix.toLowerCase()));
+      returnCart = cartItems.filter((item) => item.product.toLowerCase().startsWith(prefix.toLowerCase()));
     }
     let pageSize = req.query.pageSize;
     if (pageSize){
@@ -58,9 +58,6 @@ cart.get("/", (req, res) => {
 cart.get("/:id", (req, res) => {
     let id = req.params.id;
     console.log("Getting ", id);
-    // let found = cartItems.find((item) => {
-    //     return item.id == id
-    // })
     // THIS WORKS!
     let found = cartItems.find((item) => item.id == id);
     if(found){
@@ -75,15 +72,10 @@ cart.get("/:id", (req, res) => {
       console.log(req.body);
       let test = req.body.test
       console.log("Test results:", test )
-      let x = cartItems.length + 1; 
-      // let x = i + 1;
-      let newItem = {
-        id: x,
-        product: "shorts",
-        price: 25,
-        quantity: 2,
-    }
-    cartItemsArray.push(newItem);
+      let x = cartItems.length + 1;       
+      let newItem = req.body;
+      newItem.id = x;
+    cartItems.push(newItem);
     console.log(cartItems);
     res.status(201).json(cartItems);
   });
@@ -91,19 +83,17 @@ cart.get("/:id", (req, res) => {
   // accept PUT request at URI: /students
   cart.put("/:id", (req, res) => {
     let id = req.params.id;
-    // let found = cartItems.find((item) => {
-    //     return item.id == id
-    // })
     let updatedCart = req.body;
-    let found = cartItems.find((item) => item.id === id);
+    let found = cartItems.findIndex((item) => item.id == id);
     if (found) {
-      cartItems[req.params.id]
-    } else {
+    cartItems[found] = {...cartItems[found], ...updatedCart};
+    res.json(cartItems[found]);
 
+  } else {
+    res.json("no item updated")
     }
     //logic find id; & handle if the object doesnt exist if time (400 code)
     // cartItems[req.params.id] = {...cartItems[req.params.id], ...updatedCart};
-    res.json(updatedCart);
   });
 
   // accept DELETE request at URI: /students
@@ -121,4 +111,8 @@ cart.get("/:id", (req, res) => {
 
 
 //   res.status(404).json(`Getting all students with last name: ${cart}`);
+
+    // let found = cartItems.find((item) => {
+    //     return item.id == id
+    // })
 
