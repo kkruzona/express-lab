@@ -3,35 +3,91 @@ const cart = express.Router();
 
 let cartItems = [
     {
-        id: 01,
+        id: 1,
         product: "Shirt",
         price: 30,
         quantity: 4
     },
     {
-        id: 02,
+        id: 2,
         product: "Pants",
         price: 50,
         quantity: 3
     },
     {
-        id: 03,
+        id: 3,
         product: "Shoes",
         price: 40,
         quantity: 1
     },
     {
-        id: 04,
+        id: 4,
         product: "Necklace",
         price: 20,
         quantity: 2
     },
     {
-        id: 05,
-        product: "Earrings",
+        id: 5,
+        product: "Earring",
         price: 15,
         quantity: 5
+    },
+    {
+        id: 6,
+        product: "Ring",
+        price: 10,
+        quantity: 1
+    },
+    {
+        id: 7,
+        product: "Tank Top",
+        price: 25,
+        quantity: 2
+    },
+    {
+        id: 8,
+        product: "Blouse",
+        price: 25,
+        quantity: 1
+    },
+    {
+        id: 9,
+        product: "Leggings",
+        price: 28,
+        quantity: 3
+    },
+    {
+        id: 10,
+        product: "Headband",
+        price: 12,
+        quantity: 2
+    },
+    {
+        id: 11,
+        product: "Hair Ties",
+        price: 4,
+        quantity: 4
+    },
+    {
+        id: 12,
+        product: "Anklet",
+        price: 23,
+        quantity: 2
+    },
+    {
+        id: 13,
+        product: "Bracelet",
+        price: 18,
+        quantity: 2
+    },
+    {
+        id: 14,
+        product: "Watch",
+        price: 75,
+        quantity: 1
     }
+    
+
 ];
 
 cart.get("/", (req, res) => {
@@ -46,11 +102,11 @@ cart.get("/", (req, res) => {
     let prefix = req.query.prefix;
     if (prefix){
       // starts with ....
-      returnCart = cartItems.filter((item) => item.product.toLowerCase().startsWith(prefix.toLowerCase()));
+      returnCart = returnCart.filter((item) => item.product.toLowerCase().startsWith(prefix.toLowerCase()));
     }
     let pageSize = req.query.pageSize;
     if (pageSize){
-      returnCart = cartItems.slice(0, pageSize);
+      returnCart = returnCart.slice(0, pageSize);
     }
     res.json(returnCart);
     // res.json(returnCart);
